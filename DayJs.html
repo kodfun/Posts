@@ -1,0 +1,36 @@
+<!-- 1. DOSYA: DAY.JS ANA KÜTÜPHANESİ -->
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/dayjs.min.js"></script>
+
+<!-- 2. DOSYA: TÜRKÇELEŞTİRMEK İÇİN -->
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/locale/tr.min.js"></script>
+
+<!-- 3. DOSYA: GÖRECELİ ZAMAN EKLENTİSİ -->
+<script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/plugin/relativeTime.min.js"></script>
+
+<script>
+  dayjs.extend(window.dayjs_plugin_relativeTime);
+  dayjs.locale("tr-TR");
+</script>
+
+<script>
+  console.log(dayjs().format())
+  // ÇIKTI: 2023-01-12T22:57:11+03:00
+
+  console.log(dayjs().to(dayjs("2023-01-12 22:30")));
+  // ÇIKTI: 28 dakika önce
+
+  console.log(dayjs().to(dayjs("2023-01-12 17:30")));
+  // ÇIKTI: 5 saat önce
+
+  console.log(dayjs().to(dayjs("2023-01-10")));
+  // ÇIKTI: 3 gün önce
+
+  console.log(dayjs().to(dayjs("2023-01-01")));
+  // ÇIKTI: 12 gün önce
+
+  console.log(dayjs().to(dayjs("2022-11-17")));
+  // ÇIKTI: 2 ay önce
+
+  console.log(dayjs().to(dayjs("1999-11-17")));
+  // ÇIKTI: 23 yıl önce
+</script>
