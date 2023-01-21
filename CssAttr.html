@@ -1,0 +1,42 @@
+<nav>
+  <a data-adet="33" href="#">Macera</a>
+  <a data-adet="7" href="#">Dram</a>
+  <a data-adet="19" href="#">Aksiyon</a>
+  <a data-adet="10" href="#">Fantastik</a>
+</nav>
+
+<style>
+  nav {
+    display: flex;
+    gap: 1rem;
+  }
+
+  a {
+    color: white;
+    background-color: #3281e2;
+    padding: .5rem 1rem;
+    text-decoration: none;
+    position: relative;
+  }
+
+  a::after {
+    content: attr(data-adet);
+    display: block;
+    padding: .2rem .3rem;
+    background-color: #bf2e2e;
+    border-radius: 50%;
+    color: white;
+    font-size: .7rem;
+    position: absolute;
+    top: -.5rem;
+    right: -.5rem;
+  }
+</style>
+
+
+<style>
+  body {
+    font-family: "Montserrat";
+    margin: 1rem;
+  }
+</style>
