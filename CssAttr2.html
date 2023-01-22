@@ -1,0 +1,27 @@
+
+<p title="Vakit nakittir.">
+  Time is money.
+</p>
+
+<p title="Emeksiz yemek olmaz.">
+  No pain, no gain.
+</p>
+
+
+<style>
+  p {
+    margin: 1em 0;
+  }
+
+  p::after {
+    display: block;
+    content: '(TR: ' attr(title) ') ';
+    color: violet;
+  }
+</style>
+
+<style>
+  body {
+    font-family: "Open Sans", sans-serif;
+  }
+</style>
