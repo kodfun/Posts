@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>60 Saniyelik Geri Sayım</title>
+</head>
+<body>
+	<h1 id="countdown">60</h1>
+
+	<script>
+		var countDown = 60;
+		var countdownTimer = setInterval(function() {
+			countDown--;
+			document.getElementById("countdown").innerHTML = countDown;
+			if (countDown == 0) {
+				clearInterval(countdownTimer);
+				document.getElementById("countdown").innerHTML = "Süre doldu!";
+			}
+		}, 1000);
+	</script>
+</body>
+</html>
