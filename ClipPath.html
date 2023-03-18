@@ -1,0 +1,103 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+</style>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #examples {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100vmin;
+    height: 100vmin;
+    background-color: #F0CD7D;
+    padding: 2vmin;
+  }
+
+  .example {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2vmin;
+    width: 100%;
+    padding: 1vmin;
+  }
+
+  .frame {
+    width: 100%;
+    border: 1vmin solid #E65540;
+    flex: 19;
+  }
+
+  img {
+    clip-path: none;
+    width: 100%;
+  }
+
+  .string {
+    color: #ce9178;
+  }
+
+  .o {
+    color: #d7ba7d;
+  }
+
+  .y {
+    color: #ffd700;
+  }
+
+  .b {
+    color: #9cdcfe;
+  }
+
+  pre {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    font-size: 2.3vmin;
+    font-family: 'Source Code Pro', monospace;
+    line-height: 1.5;
+    padding: 1vmin;
+    border-radius: 10px;
+    flex: 81;
+  }
+</style>
+
+<div id="examples"></div>
+
+<script>
+  const examples = document.getElementById("examples");
+  const paths = [
+    "none",
+    "circle(50% at 50% 50%)",
+    "ellipse(50% 50% at 50% 50%)",
+    "inset(10% 20% 30% 40%)",
+    "polygon(0% 0%, 0% 100%, 100% 100%)"
+  ];
+
+  for (let i = 0; i < paths.length; i++) {
+    const path = paths[i];
+    const img = document.createElement("img");
+    const example = document.createElement("div");
+    example.className = "example";
+    const frame = document.createElement("div");
+    const code = document.createElement("pre");
+    code.innerHTML = '<span class="O">img</span> <span class="y">{</span>\n    <span class="b">clip-path</span>: <span class="string">' + path + "</span>; \n<span class='y'>}</span>";
+    frame.className = "frame";
+    img.style.clipPath = path;
+    img.src = "assets/img/jersey.jpg";
+    frame.appendChild(img);
+    example.appendChild(frame);
+    example.appendChild(code);
+    examples.appendChild(example);
+  }
+</script>
