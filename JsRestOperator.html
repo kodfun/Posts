@@ -1,0 +1,31 @@
+<script>
+  function sum(...numbers) {
+    let result = 0;
+    for (let number of numbers) {
+      result += number;
+    }
+    return result;
+  }
+
+  console.log(sum(1, 2, 3, 4, 5));
+  // expected output: 15
+
+  console.log(sum(1, 2, 3));
+  // expected output: 6
+</script>
+
+<script>
+  function topla(...sayilar) {
+    let sonuc = 0;
+    for (let sayi of sayilar) {
+      sonuc += sayi;
+    }
+    return sonuc;
+  }
+
+  console.log(topla(1, 2, 3, 4, 5));
+  // beklenen çıktı: 15
+
+  console.log(topla(1, 2, 3));
+  // beklenen çıktı: 6
+</script>
