@@ -1,0 +1,18 @@
+html {
+  font-size: 40px;
+}
+
+:root {
+  --blue: #0285A6;  
+  --light: #F2EDDF;
+}
+
+h1 {
+  color: var(--blue);
+  border-bottom: 3px solid var(--blue);
+}
+
+p {
+  background-color: var(--blue);
+  color: var(--light);
+}
