@@ -1,0 +1,142 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap');
+
+  canvas {
+    border: 3px dashed red;
+  }
+</style>
+
+<canvas id="canvas" width="1080" height="1080"></canvas>
+
+<script>
+  const langs = [
+    "JavaScript",
+    "Python",
+    "Java",
+    "Typescript",
+    "C#",
+    "C++",
+    "PHP",
+    "Shell",
+    "C",
+    "Ruby",
+  ];
+
+  const years = [
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022"
+  ];
+
+  const data = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [4, 3, 3, 3, 3, 2, 2, 2, 2],
+    [2, 2, 2, 2, 2, 3, 3, 3, 3],
+    [10, 10, 10, 10, 7, 5, 4, 4, 4],
+    [8, 7, 6, 6, 6, 7, 5, 5, 5],
+    [6, 6, 5, 5, 5, 6, 7, 7, 6],
+    [3, 4, 4, 4, 4, 4, 6, 6, 7],
+    [9, 9, 9, 8, 9, 9, 9, 8, 8],
+    [7, 8, 8, 7, 8, 8, 8, 9, 9],
+    [5, 5, 7, 9, 10, 10, 10, 10, 10]
+  ];
+
+  const colors = [
+    "#b1d353",
+    "#b8c1ff",
+    "#969696",
+    "#49bcb7",
+    "#f2584f",
+    "#3c42d0",
+    "#95e8aa",
+    "#ff7d50",
+    "#df1f94",
+    "#393c2c",
+  ];
+
+  const canvas = document.getElementById("canvas");
+  const c = canvas.getContext("2d");
+
+  const my = 100, mx = 80, lw = 6, startX = 100;
+
+  for (let j = 1; j < data[0].length - 1; j++) {
+    drawColumn(j);
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    drawLine(i);
+    drawRankNumber(i);
+    drawLangName(i);
+  }
+  
+  for (let j = 0; j < data[0].length; j++) {
+    drawYear(j);
+  }
+
+  function drawYear(j) {
+    let fs = 20;
+    c.beginPath();
+    c.font = `bold ${fs}px Roboto`;
+    c.fillStyle = "#aaa";
+    c.fillText(years[j], startX + j * mx - fs * 1.16, (data.length) * my + fs * 2.5);
+  }
+
+  function drawLangName(i) {
+    let fs = 60;
+    c.beginPath();
+    c.font = `bold ${fs}px Roboto`;
+    c.fillStyle = colors[i];
+    c.fillText(langs[i], startX * 1.3 + (data[0].length - 1) * mx, (i + 1) * my + fs / 2.7);
+  }
+
+  function drawRankNumber(i) {
+    let fs = 60;
+    c.beginPath();
+    c.font = `bold ${fs}px Roboto`;
+    c.fillStyle = colors[i];
+    c.fillText(i + 1, startX / 2 - fs / 2, (i + 1) * my + fs / 2.7);
+  }
+
+  function drawLine(i, x, y) {
+    const ranks = data[i];
+    for (let j = 1; j < ranks.length; j++) {
+      if (j == 1) {
+        drawCircle((j - 1) * mx + startX, ranks[j - 1] * (my + 1), colors[i]);
+      }
+      c.beginPath();
+      c.moveTo((j - 1) * mx + startX, ranks[j - 1] * (my + 1));
+      c.lineTo(j * mx + startX, ranks[j] * (my + 1));
+      c.lineWidth = lw;
+      c.strokeStyle = colors[i];
+      c.stroke();
+      drawCircle(j * mx + startX, ranks[j] * (my + 1), colors[i]);
+    }
+  }
+
+  function drawCircle(x, y, color) {
+    c.beginPath();
+    c.arc(x, y, lw , 0, Math.PI * 2, false);
+    c.fillStyle = "#fff";
+    c.fill();
+    c.lineWidth = 0;
+    c.fillStyle = color;
+    c.fill();
+  }
+
+  function drawColumn(j) {
+    for (let i = 0; i < data[0].length; i++) {
+      c.beginPath();
+      c.moveTo(j * mx + startX, my);
+      c.lineTo(j * mx + startX, data.length * my + lw + lw);
+      c.lineWidth = 2;
+      c.strokeStyle = "#ececec";
+      c.stroke();
+    }
+  }
+</script>
