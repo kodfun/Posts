@@ -1,0 +1,35 @@
+<h1>Ülkeler</h1>
+<h2>Japonya</h2>
+<p>Teknolojik yenilikçilik.</p>
+<h2>Brezilya</h2>
+<p>Enerji dolu festivaller.</p>
+<h2>Almanya</h2>
+<p>Mükemmeliyetçilik.</p>
+<h1>Şehirler</h1>
+<h2>Tokyo</h2>
+<p>Modernite ve dinamizm.</p>
+<h2>Paris</h2>
+<p>Romantizm ve sanat.</p>
+<h2>New York</h2>
+<p>Metropol ve çeşitlilik.</p>
+
+<style>
+  body {
+    counter-reset: baslik;
+  }
+
+  h1 {
+    counter-reset: altbaslik;
+  }
+/*  */
+  h1::before {
+    counter-increment: baslik;
+    content: counter(baslik) ". ";
+  }
+
+  h2::before {
+    counter-increment: altbaslik;
+    content: counter(baslik) "." 
+          counter(altbaslik) " ";
+  }
+</style>
