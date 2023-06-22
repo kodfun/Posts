@@ -1,0 +1,153 @@
+<script>
+    const cities = [
+        "adana", "adıyaman", "afyonkarahisar", "ağrı",
+        "amasya", "ankara", "antalya", "artvin", "aydın",
+        "balıkesir", "bilecik", "bingöl", "bitlis", "bolu",
+        "burdur", "bursa", "çanakkale", "çankırı", "çorum",
+        "denizli", "diyarbakır", "edirne", "elazığ",
+        "erzincan", "erzurum", "eskişehir", "gaziantep",
+        "giresun", "gümüşhane", "hakkari", "hatay",
+        "ısparta", "mersin", "istanbul", "izmir", "kars",
+        "kastamonu", "kayseri", "kırklareli", "kırşehir",
+        "kocaeli", "konya", "kütahya", "malatya", "manisa",
+        "kahramanmaraş", "mardin", "muğla", "muş",
+        "nevşehir", "niğde", "ordu", "rize", "sakarya",
+        "samsun", "siirt", "sinop", "sivas", "tekirdağ",
+        "tokat", "trabzon", "tunceli", "şanlıurfa", "uşak",
+        "van", "yozgat", "zonguldak", "aksaray", "bayburt",
+        "karaman", "kırıkkale", "batman", "şırnak", "bartın",
+        "ardahan", "ığdır", "yalova", "karabük", "kilis",
+        "osmaniye", "düzce"
+    ];
+
+    // "s" ile Başlayan İller
+    let citiesK = cities.filter(c => c.startsWith("s"));
+    o(citiesK);
+
+    // "at" İçeren İller
+    let citiesOn = cities.filter(c => c.includes("at"));
+    o(citiesOn);
+
+    // "şehir" ile Biten İller
+    let citiesP = cities.filter(c => c.endsWith("şehir"));
+    o(citiesP);
+
+    // 4 Karakterden Oluşan İller
+    let cities4 = cities.filter(c => c.length == 4);
+    o(cities4);
+
+    // 3. Harfi "k" Olanlar
+    let cities$ = cities.filter(c => c[2] == "k");
+    o(cities$);
+
+    // İsmi En Uzun 5 İl
+    let citiesL =
+        [...cities]
+            .sort((a, b) => b.length - a.length)
+            .slice(0, 5);
+    o(citiesL);
+
+    // Ardarda Aynı Harfi İçerenler
+    let citiesD = cities.filter(city => /(.)\1/.test(city));
+    o(citiesD);
+
+    // Son 10 İlin İlk Üç Harfleri
+    let citiesM =
+        cities
+            .slice(-10)
+            .map(c => c.substr(0, 3));
+    o(citiesM);
+
+    // 31-35 Aralığındaki İller Tersten
+    let citiesR = 
+    cities
+        .slice(30, 35)
+        .map(c => c.split("").reverse().join(""));
+    o(citiesR);
+
+
+
+    // function o(arr) {
+    //     document.write(arr.join("-"));
+    //     document.write("<br>");
+    // }
+
+    function o(arr) {
+        document.write("[<br>");
+        document.write(arr.map(x => `&nbsp;&nbsp;&nbsp;&nbsp;"${x}"`).join(",<br>"))
+        document.write("<br>]<br><br>");
+    }
+
+/*
+[
+    "sakarya",
+    "samsun",
+    "siirt",
+    "sinop",
+    "sivas"
+]
+
+[
+    "hatay",
+    "malatya",
+    "tokat",
+    "yozgat",
+    "batman"
+]
+
+[
+    "eskişehir",
+    "kırşehir",
+    "nevşehir"
+]
+
+[
+    "ağrı",
+    "bolu",
+    "kars",
+    "ordu",
+    "rize",
+    "uşak"
+]
+
+[
+    "ankara",
+    "eskişehir",
+    "hakkari",
+    "sakarya",
+    "tekirdağ",
+    "tokat"
+]
+
+[
+    "afyonkarahisar",
+    "kahramanmaraş",
+    "diyarbakır",
+    "kırklareli",
+    "balıkesir"
+]
+
+[
+    "çanakkale",
+    "hakkari",
+    "siirt",
+    "kırıkkale"
+]
+
+[
+    "bat", "şır", 
+    "bar", "ard", 
+    "ığd", "yal",
+    "kar", "kil", 
+    "osm", "düz"
+]
+
+[
+    "yatah",
+    "atrapsı",
+    "nisrem",
+    "lubnatsi",
+    "rimzi"
+]
+*/
+</script>
