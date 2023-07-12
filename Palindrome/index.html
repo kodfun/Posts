@@ -1,0 +1,61 @@
+<script>
+  function isPalindrome(str) {
+    str = str
+      .replace(/[^A-Za-z]/g, '')
+      .toLowerCase();
+
+    let reversed = str
+      .split('')
+      .reverse()
+      .join('');
+
+    return str === reversed;
+  }
+
+  // OUTPUT: true
+  console.log(
+    isPalindrome("Borrow or rob?")
+  );
+
+  function isPalindromeTr(str) {
+    str = str
+      .replace(/[^A-Za-zÇĞİÖŞÜçğıöşü]/g, '')
+      .toLowerCase();
+
+    let reversed = str
+      .split('')
+      .reverse()
+      .join('');
+
+    return str === reversed;
+  }
+
+  // SOME PALINDROMES
+  const palindromes = [
+    "Able was I ere I saw Elba.",
+
+    "Madam, in Eden, I'm Adam.",
+
+    "A man, a plan, a canal: Panama.",
+
+    "Was it a car or a cat I saw?",
+
+    "Don't nod.",
+
+    "Sir, I demand, I am a maid named Iris.",
+
+    "Do geese see God?",
+
+    "Never odd or even.",
+
+    "Red roses run no risk, sir, on Nurse's order.",
+
+    "Was it a rat I saw?"
+  ];
+
+  for (const p of palindromes) {
+    console.log(
+      isPalindrome(p)
+    );
+  }
+</script>
