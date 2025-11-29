@@ -1,0 +1,65 @@
+<title>Glass Card</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+
+<div class="glass-card glass">
+    <i class="fa-solid fa-plane fa-xl"></i>
+</div>
+
+<div class="glass-card glass">
+    <i class="fa-solid fa-wifi fa-xl"></i>
+</div>
+
+<div class="glass-card glass">
+    <i class="fa-solid fa-bell fa-xl"></i>
+</div>
+
+<div class="glass-card glass">
+    <i class="fa-solid fa-moon fa-xl"></i>
+</div>
+
+
+<style>
+    html {
+        font-size: 24px;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("https://picsum.photos/id/569/1920/1080");
+        background-position: center center;
+        font-family: system-ui, sans-serif;
+    }
+
+    .glass-card {
+        margin: 8px;
+        width: 1rem;
+        height: 1rem;
+        padding: 1rem 1.1rem;
+        border-radius: 18px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .glass {
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px outset rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(16px);
+    }
+</style>
+
+<script>
+    let x = 503;
+    document.body.onclick = () => {
+        document.body.style.backgroundImage = `url(https://picsum.photos/id/${++x}/1920/1080)`;
+
+        document.title = x;
+    };
+</script>
