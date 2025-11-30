@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Math Mini Rehber</title>
+    <!-- Inter font'u varsayılan olarak yüklenmiş durumda, diğerlerini JS ile ekleyeceğiz -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /*
+         * Temel Renk Değişkenleri (CSS Custom Properties)
+         */
+        :root {
+            /* Varsayılan Tema: Ayu Dark (Başlangıçta ayarlanacak) */
+            --bg-color-main: #0A0E14;       
+            --bg-color-canvas: #0F141F;     
+            --bg-color-card: #1C202B;       
+            --bg-color-output: #262A35;     
+            --color-text-primary: #E6E8ED;  
+            --color-text-secondary: #959EAB; 
+            --color-highlight-cyan: #FFCC66; 
+            --color-highlight-amber: #95E6CB; 
+            --color-border: #6C798A;        
+            
+            /* Font değişkeni */
+            --main-font: 'Inter', sans-serif;
+        }
+
+        /* Tüm içeriği ortalamak için dış kapsayıcı */
+        body {
+            background-color: var(--bg-color-main); 
+            font-family: var(--main-font); /* Font değişkenini kullan */
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, font-family 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        #app-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Kontrol Bölgesi Stili - CANVAS DIŞINDA */
+        #controls-container {
+            display: flex;
+            justify-content: space-between; /* İki kontrol grubunu ayır */
+            width: 1080px; 
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            padding: 0 35px; /* Canvas'ın padding'i ile hizalama */
+            flex-wrap: wrap; /* Küçük ekranlar için kaydırma */
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            color: var(--color-text-primary);
+            margin-top: 10px; /* Biraz boşluk ekleyelim */
+        }
+
+        /* Combobox Stili */
+        #theme-selector, #font-selector {
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: var(--bg-color-card);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            max-width: 300px;
+            transition: all 0.3s;
+        }
+        
+        /* Infografik Alanı: Instagram Post Boyutları (1080x1350) */
+        #infographic {
+            width: 1080px;
+            height: 1350px;
+            display: flex;
+            flex-direction: column;
+            padding: 50px 35px; 
+            box-sizing: border-box;
+            background-color: var(--bg-color-canvas); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            font-family: var(--main-font); /* Infografik de fontu kullanır */
+        }
+
+        /* Grid Stili */
+        #cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 30px; 
+            flex-grow: 1;
+            align-content: start;
+        }
+
+        /* Kart Stili */
+        .card {
+            background-color: var(--bg-color-card); 
+            padding: 15px; 
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid var(--color-border);
+            transition: all 0.3s;
+        }
+        
+        /* Metot Başlığı (Font daha kalın ve vurgulu) */
+        .card-example {
+            font-size: 24px; 
+            font-weight: 900;
+            color: var(--color-highlight-cyan); 
+            margin-bottom: 10px;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+        
+        /* Çıktı Bloğu */
+        .card-output-block {
+            background-color: var(--bg-color-output); 
+            color: var(--color-highlight-amber);
+            padding: 8px 10px; 
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            font-weight: 900;
+            transition: all 0.3s;
+        }
+
+        /* Çıktı değeri */
+        .card-output-block strong {
+            margin-left: 8px;
+            font-size: 26px; 
+            color: var(--color-highlight-amber);
+        }
+        
+        /* Türkçe Açıklama Stili */
+        .card-tr {
+            font-size: 16px; 
+            font-weight: 700;
+            color: var(--color-text-primary);
+            line-height: 1.3; 
+            margin-bottom: 5px;
+            border-top: 1px solid var(--color-border); 
+            padding-top: 10px;
+            transition: border-color 0.3s;
+        }
+
+        /* İngilizce Açıklama Stili */
+        .card-en {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--color-text-secondary); 
+            font-style: italic;
+            margin-top: 5px;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-wrapper">
+        <!-- Kontrolleri içeren kapsayıcı -->
+        <div id="controls-container">
+            <!-- Tema Seçicisi -->
+            <div class="control-group">
+                <label for="theme-selector" style="margin-right: 10px; font-weight: 700;">Tema Seçin:</label>
+                <select id="theme-selector"></select>
+            </div>
+            
+            <!-- Font Seçicisi -->
+            <div class="control-group">
+                <label for="font-selector" style="margin-right: 10px; font-weight: 700;">Font Seçin:</label>
+                <select id="font-selector"></select>
+            </div>
+        </div>
+
+        <div id="infographic">
+            <!-- Başlık etiketi gizlendi. -->
+            <h1 id="main-title" style="display: none;">12 JavaScript Math Metodu</h1>
+
+            <div id="cards-grid">
+                <!-- Kartlar JavaScript tarafından buraya eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tanımlanmış Popüler Tema Paletleri (Aynı kaldı)
+        const baseThemes = {
+            // 1. AYU GRUBU (4 Tema)
+            'ayu_mirage_deep': {
+                name: '1. Ayu Deep Mirage', '--bg-color-main': '#12161D', '--bg-color-canvas': '#1F2430', '--bg-color-card': '#272E3D',
+                '--bg-color-output': '#353F54', '--color-text-primary': '#D8DEE9', '--color-text-secondary': '#A3B0BD',
+                '--color-highlight-cyan': '#FF8F40', '--color-highlight-amber': '#5CCBFF', '--color-border': '#607D8B',
+            },
+            'ayu_mirage': {
+                name: '2. Ayu Mirage (Orijinal)', '--bg-color-main': '#171B20', '--bg-color-canvas': '#212733', '--bg-color-card': '#303947',
+                '--bg-color-output': '#3C485A', '--color-text-primary': '#D8DEE9', '--color-text-secondary': '#A3B0BD',
+                '--color-highlight-cyan': '#FF8F40', '--color-highlight-amber': '#C2B0E7', '--color-border': '#607D8B',
+            },
+            'ayu_dark': {
+                name: '3. Ayu Dark (Varsayılan)', '--bg-color-main': '#0A0E14', '--bg-color-canvas': '#0F141F', '--bg-color-card': '#1C202B',
+                '--bg-color-output': '#262A35', '--color-text-primary': '#E6E8ED', '--color-text-secondary': '#959EAB',
+                '--color-highlight-cyan': '#FFCC66', '--color-highlight-amber': '#95E6CB', '--color-border': '#6C798A',
+            },
+            'ayu_light': {
+                name: '4. Ayu Light', '--bg-color-main': '#F8F9FA', '--bg-color-canvas': '#FAFAFA', '--bg-color-card': '#FFFFFF',
+                '--bg-color-output': '#F2F2F2', '--color-text-primary': '#263238', '--color-text-secondary': '#546E7A',
+                '--color-highlight-cyan': '#FFCC66', '--color-highlight-amber': '#8A6EAD', '--color-border': '#CFD8DC',
+            },
+
+            // 2. DİĞER POPÜLER TEMALAR (16 Tema)
+            'dark_tech': {
+                name: '5. Koyu Teknoloji', '--bg-color-main': '#0A0A10', '--bg-color-canvas': '#1A1A2E', '--bg-color-card': '#2A2A4A',
+                '--bg-color-output': '#4A4A6A', '--color-text-primary': '#EAEAEA', '--color-text-secondary': '#B0BEC5',
+                '--color-highlight-cyan': '#64FFDA', '--color-highlight-amber': '#FF9800', '--color-border': '#535385',
+            },
+            'midnight_purple': {
+                name: '6. Geceyarısı Moru', '--bg-color-main': '#12121A', '--bg-color-canvas': '#21004C', '--bg-color-card': '#38006B',
+                '--bg-color-output': '#4C0099', '--color-text-primary': '#F3E5F5', '--color-text-secondary': '#CBB8D9',
+                '--color-highlight-cyan': '#84FFFF', '--color-highlight-amber': '#FF4081', '--color-border': '#AA00FF',
+            },
+            'material_deep_blue': {
+                name: '7. Material Koyu Mavi', '--bg-color-main': '#102027', '--bg-color-canvas': '#263238', '--bg-color-card': '#37474F',
+                '--bg-color-output': '#00BCD4', '--color-text-primary': '#CFD8DC', '--color-text-secondary': '#90A4AE',
+                '--color-highlight-cyan': '#00BCD4', '--color-highlight-amber': '#FFC107', '--color-border': '#455A64',
+            },
+            'forest_green': {
+                name: '8. Orman Yeşili', '--bg-color-main': '#000000', '--bg-color-canvas': '#1B5E20', '--bg-color-card': '#388E3C',
+                '--bg-color-output': '#004D40', '--color-text-primary': '#FFEB3B', '--color-text-secondary': '#C8E6C9',
+                '--color-highlight-cyan': '#FFEB3B', '--color-highlight-amber': '#A5D6A7', '--color-border': '#4CAF50',
+            },
+            'monokai_dark': {
+                name: '9. Monokai (Kod Teması)', '--bg-color-main': '#1C1C17', '--bg-color-canvas': '#272822', '--bg-color-card': '#3E3D32',
+                '--bg-color-output': '#49483E', '--color-text-primary': '#F8F8F2', '--color-text-secondary': '#A6E22E',
+                '--color-highlight-cyan': '#F92672', '--color-highlight-amber': '#E6DB74', '--color-border': '#66D9EF',
+            },
+            'solarized_dark': {
+                name: '10. Solarize Koyu', '--bg-color-main': '#00141A', '--bg-color-canvas': '#002B36', '--bg-color-card': '#073642',
+                '--bg-color-output': '#0A404D', '--color-text-primary': '#93A1A1', '--color-text-secondary': '#586E75',
+                '--color-highlight-cyan': '#2AA198', '--color-highlight-amber': '#DC322F', '--color-border': '#0E5562',
+            },
+            'nord_dark': {
+                name: '11. Nord Koyu', '--bg-color-main': '#242933', '--bg-color-canvas': '#2E3440', '--bg-color-card': '#3B4252',
+                '--bg-color-output': '#4C566A', '--color-text-primary': '#D8DEE9', '--color-text-secondary': '#E5E9F0',
+                '--color-highlight-cyan': '#88C0D0', '--color-highlight-amber': '#A3BE8C', '--color-border': '#5E81AC',
+            },
+            'gruvbox_dark': {
+                name: '12. Gruvbox Koyu', '--bg-color-main': '#181818', '--bg-color-canvas': '#282828', '--bg-color-card': '#3C3836',
+                '--bg-color-output': '#504945', '--color-text-primary': '#EBDBB2', '--color-text-secondary': '#A89984',
+                '--color-highlight-cyan': '#B8BB26', '--color-highlight-amber': '#FABD2F', '--color-border': '#D79921',
+            },
+            'dracula_dark': {
+                name: '13. Dracula Koyu', '--bg-color-main': '#21222C', '--bg-color-canvas': '#282A36', '--bg-color-card': '#44475A',
+                '--bg-color-output': '#6272A4', '--color-text-primary': '#F8F8F2', '--color-text-secondary': '#BD93F9',
+                '--color-highlight-cyan': '#50FA7B', '--color-highlight-amber': '#FF79C6', '--color-border': '#FF79C6',
+            },
+            'cyberpunk': {
+                name: '14. Cyberpunk Neon', '--bg-color-main': '#000000', '--bg-color-canvas': '#000000', '--bg-color-card': '#101010',
+                '--bg-color-output': '#1A1A1A', '--color-text-primary': '#FEE715', '--color-text-secondary': '#FF00FF',
+                '--color-highlight-cyan': '#00FFFF', '--color-highlight-amber': '#FF00FF', '--color-border': '#FEE715',
+            },
+            'terminal': {
+                name: '15. Terminal Yeşil', '--bg-color-main': '#000000', '--bg-color-canvas': '#000000', '--bg-color-card': '#0A0A0A',
+                '--bg-color-output': '#050505', '--color-text-primary': '#00FF00', '--color-text-secondary': '#008800',
+                '--color-highlight-cyan': '#00FF00', '--color-highlight-amber': '#00FFFF', '--color-border': '#008800',
+            },
+            'coffee': {
+                name: '16. Kahve Tonları', '--bg-color-main': '#D7CCC8', '--bg-color-canvas': '#795548', '--bg-color-card': '#8D6E63',
+                '--bg-color-output': '#6D4C41', '--color-text-primary': '#FFFDE7', '--color-text-secondary': '#EFEBE9',
+                '--color-highlight-cyan': '#D7CCC8', '--color-highlight-amber': '#FFCCBC', '--color-border': '#BCAAA4',
+            },
+            'material_teal': {
+                name: '17. Material Teal (Orta Ton)', '--bg-color-main': '#B2DFDB', '--bg-color-canvas': '#009688', '--bg-color-card': '#4DB6AC',
+                '--bg-color-output': '#004D40', '--color-text-primary': '#E0F2F1', '--color-text-secondary': '#4DB6AC',
+                '--color-highlight-cyan': '#FFEB3B', '--color-highlight-amber': '#3F51B5', '--color-border': '#004D40',
+            },
+            'ocean_blue': {
+                name: '18. Okyanus Mavisi (Açık)', '--bg-color-main': '#E3F2FD', '--bg-color-canvas': '#BBDEFB', '--bg-color-card': '#90CAF9',
+                '--bg-color-output': '#FF9800', '--color-text-primary': '#1A237E', '--color-text-secondary': '#42A5F5',
+                '--color-highlight-cyan': '#FF9800', '--color-highlight-amber': '#1976D2', '--color-border': '#64B5F6',
+            },
+            'light_minimal': {
+                name: '19. Açık Minimalist', '--bg-color-main': '#F0F0F5', '--bg-color-canvas': '#FFFFFF', '--bg-color-card': '#F7F7F7',
+                '--bg-color-output': '#E8F5E9', '--color-text-primary': '#263238', '--color-text-secondary': '#546E7A',
+                '--color-highlight-cyan': '#00B8D4', '--color-highlight-amber': '#E64A19', '--color-border': '#CFD8DC',
+            },
+            'vs_code_light': {
+                name: '20. VS Code Açık', '--bg-color-main': '#E8E8E8', '--bg-color-canvas': '#F3F3F3', '--bg-color-card': '#FFFFFF',
+                '--bg-color-output': '#F0F0F0', '--color-text-primary': '#1E1E1E', '--color-text-secondary': '#6A6A6A',
+                '--color-highlight-cyan': '#007ACC', '--color-highlight-amber': '#D13438', '--color-border': '#CCCCCC',
+            },
+        };
+
+        // Popüler Google Fontları (20 adet)
+        const googleFonts = [
+            { name: 'Inter (Varsayılan)', value: 'Inter' },
+            { name: 'Roboto', value: 'Roboto' },
+            { name: 'Open Sans', value: 'Open Sans' },
+            { name: 'Lato', value: 'Lato' },
+            { name: 'Montserrat', value: 'Montserrat' },
+            { name: 'Poppins', value: 'Poppins' },
+            { name: 'Oswald', value: 'Oswald' },
+            { name: 'Fira Sans', value: 'Fira Sans' },
+            { name: 'Source Sans 3', value: 'Source Sans 3' },
+            { name: 'Merriweather', value: 'Merriweather' }, // Serif
+            { name: 'Playfair Display', value: 'Playfair Display' }, // Serif
+            { name: 'Noto Sans', value: 'Noto Sans' },
+            { name: 'Nunito', value: 'Nunito' },
+            { name: 'Ubuntu', value: 'Ubuntu' },
+            { name: 'Kanit', value: 'Kanit' },
+            { name: 'Bebas Neue', value: 'Bebas Neue' }, // Başlıklar için iyi
+            { name: 'Space Mono', value: 'Space Mono' }, // Monospace
+            { name: 'DM Sans', value: 'DM Sans' },
+            { name: 'Work Sans', value: 'Work Sans' },
+            { name: 'Cabin', value: 'Cabin' },
+        ];
+
+
+        // Kart Verileri (Aynı kaldı)
+        const mathMethods = [
+            { example: 'Math.round(4.6)', output: '5', tr: 'En yakın tamsayıya yuvarlar.', en: 'Rounds to nearest integer.' },
+            { example: 'Math.floor(4.9)', output: '4', tr: 'Aşağı yönde tamsayıya yuvarlar.', en: 'Rounds down to integer.' },
+            { example: 'Math.ceil(4.1)', output: '5', tr: 'Yukarı yönde tamsayıya yuvarlar.', en: 'Rounds up to integer.' },
+            { example: 'Math.trunc(4.9)', output: '4', tr: 'Ondalık kısmı siler (tamsayı).', en: 'Removes decimal part.' },
+            { example: 'Math.abs(-5)', output: '5', tr: 'Mutlak (pozitif) değerini döndürür.', en: 'Returns the absolute value.' },
+            { example: 'Math.sign(-8)', output: '-1', tr: 'Sayının işaretini döndürür (-1, 0, 1).', en: 'Returns sign of number (-1, 0, 1).' },
+            { example: 'Math.min(3, 8, 2)', output: '2', tr: 'En küçük değeri döndürür.', en: 'Returns the smallest value.' },
+            { example: 'Math.max(3, 8, 2)', output: '8', tr: 'En büyük değeri döndürür.', en: 'Returns the largest value.' },
+            { example: 'Math.random()', output: '0.27...', tr: '0 ve 1 arasında rastgele sayı üretir.', en: 'Generates random number (0-1).' },
+            { example: 'Math.pow(2, 3)', output: '8', tr: 'Üs (kuvvet) alma işlemi yapar.', en: 'Returns base to the exponent power.' },
+            { example: 'Math.sqrt(9)', output: '3', tr: 'Karekökünü döndürür.', en: 'Returns the square root.' },
+            { example: 'Math.cbrt(27)', output: '3', tr: 'Küpkökünü döndürür.', en: 'Returns the cube root.' },
+            { example: 'Math.log10(100)', output: '2', tr: '10 tabanında logaritma alır.', en: 'Returns the base 10 logarithm.' },
+            { example: 'Math.PI', output: '3.14159...', tr: 'PI sabitini verir.', en: 'Returns the value of Pi.' },
+            { example: 'Math.E', output: '2.71828...', tr: 'Euler sabitini verir.', en: 'Returns the value of Euler\'s constant.' }
+        ];
+
+        // Kartları oluşturup DOM'a ekleme fonksiyonu (Aynı kaldı)
+        function renderCards() {
+            const grid = document.getElementById('cards-grid');
+            grid.innerHTML = ''; 
+
+            mathMethods.forEach(method => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                // 1. METOT BAŞLIĞI
+                const example = document.createElement('div');
+                example.className = 'card-example';
+                example.textContent = method.example;
+                card.appendChild(example);
+
+                // 2. ÇIKTI BLOĞU
+                const outputBlock = document.createElement('div');
+                outputBlock.className = 'card-output-block';
+                outputBlock.innerHTML = `&rarr;<strong> ${method.output}</strong>`; 
+                card.appendChild(outputBlock);
+
+                // 3. TÜRKÇE AÇIKLAMA
+                const tr = document.createElement('div');
+                tr.className = 'card-tr';
+                tr.textContent = method.tr;
+                card.appendChild(tr);
+
+                // 4. İNGİLİZCE AÇIKLAMA
+                const en = document.createElement('div');
+                en.className = 'card-en';
+                en.textContent = method.en;
+                card.appendChild(en);
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        // Tema uygulama fonksiyonu (Aynı kaldı)
+        function applyTheme(themeKey) {
+            const root = document.documentElement;
+            const theme = baseThemes[themeKey];
+            if (theme) {
+                for (const [key, value] of Object.entries(theme)) {
+                    if (key.startsWith('--')) {
+                        root.style.setProperty(key, value);
+                    }
+                }
+            }
+        }
+        
+        // Font uygulama fonksiyonu
+        function applyFont(fontName) {
+            const root = document.documentElement;
+            
+            // 1. Yeni Google Font'u dinamik olarak yükle
+            if (fontName !== 'Inter') {
+                const head = document.getElementsByTagName('head')[0];
+                // Yalnızca seçilen fontu bir kez yüklemek için mevcut linkleri kontrol et
+                const existingLink = document.querySelector(`link[data-font="${fontName.replace(/\s/g, '+')}"]`);
+                
+                if (!existingLink) {
+                    const newLink = document.createElement('link');
+                    newLink.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s/g, '+')}:wght@400;700;900&display=swap`;
+                    newLink.rel = 'stylesheet';
+                    newLink.setAttribute('data-font', fontName.replace(/\s/g, '+'));
+                    head.appendChild(newLink);
+                }
+            }
+            
+            // 2. CSS değişkenini güncelle
+            root.style.setProperty('--main-font', `'${fontName}', sans-serif`);
+        }
+
+
+        // Tema seçiciyi ayarlama
+        function setupThemeSelector() {
+            const selector = document.getElementById('theme-selector');
+            
+            for (const key in baseThemes) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = baseThemes[key].name;
+                selector.appendChild(option);
+            }
+            
+            selector.addEventListener('change', (event) => {
+                applyTheme(event.target.value);
+            });
+            
+            const defaultTheme = 'ayu_dark';
+            applyTheme(defaultTheme);
+            selector.value = defaultTheme;
+        }
+
+        // Font seçiciyi ayarlama
+        function setupFontSelector() {
+            const selector = document.getElementById('font-selector');
+            
+            googleFonts.forEach(font => {
+                const option = document.createElement('option');
+                option.value = font.value;
+                option.textContent = font.name;
+                // Fontun önizlemesi için inline style ekle
+                option.style.fontFamily = `'${font.value}', sans-serif`; 
+                selector.appendChild(option);
+            });
+            
+            selector.addEventListener('change', (event) => {
+                applyFont(event.target.value);
+            });
+            
+            // Varsayılan font 'Inter'
+            applyFont('Inter');
+            selector.value = 'Inter';
+        }
+
+
+        // Sayfa yüklendiğinde kartları oluştur ve seçicileri ayarla
+        window.onload = () => {
+            renderCards();
+            setupThemeSelector();
+            setupFontSelector();
+        };
+    </script>
+</body>
+</html>
