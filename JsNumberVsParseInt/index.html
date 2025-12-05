@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS: parseInt vs Number</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@600;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Değişkenleri ve Varsayılan Tema */
+        :root {
+            --bg-page: #0f172a; 
+            --header-bg: #4f46e5;
+            --header-text: #e0e7ff; 
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --table-header-bg: rgba(30, 41, 59, 0.5);
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: white; /* Temaların içerik rengi beyazdır */
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Sabit Oran: 1080x1350 (4:5) */
+        .post-4-5 {
+            width: 1080px; /* Sabit Genişlik */
+            height: 1350px; /* Sabit Yükseklik (1080 * 1.25) */
+        }
+
+        /* Tema Seçici Stili */
+        #theme-select {
+            appearance: none;
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s;
+        }
+        #theme-select:hover {
+            background-color: #3730a3;
+        }
+    </style>
+</head>
+<!-- Body, içeriği dikeyde ortalamak için. -->
+<body class="min-h-screen flex flex-col items-center justify-center p-8">
+
+    <!-- Tema Seçici (Canvas dışında, üstte) -->
+    <div id="theme-selector-container" class="mb-8">
+        <label for="theme-select" class="mr-4 text-lg font-semibold text-white/90">Tema Seçin:</label>
+        <select id="theme-select" onchange="applyTheme(this.value)">
+            <!-- Seçenekler JS ile doldurulacak -->
+        </select>
+    </div>
+
+    <!-- Ana Konteyner (Sabit 4:5 Post Boyutu) -->
+    <div id="main-post" class="glass-panel rounded-2xl shadow-2xl relative flex flex-col overflow-hidden post-4-5">
+        
+        <!-- Üst Başlık (Renkler CSS değişkenlerinden alınıyor) -->
+        <div id="header" class="px-12 py-6 text-center relative overflow-hidden flex-shrink-0" style="background-color: var(--header-bg); color: var(--header-text);">
+            <h1 class="text-7xl font-extrabold tracking-tight">JS TYPE TRAP</h1>
+            <p class="text-4xl mt-2 code-font">parseInt(v) vs Number(v)</p>
+        </div>
+
+        <!-- Tablo Başlıkları (Renkler CSS değişkenlerinden alınıyor) -->
+        <div id="table-header" class="grid grid-cols-12 gap-2 px-12 py-4 text-xl text-slate-400 font-semibold uppercase tracking-wider text-center flex-shrink-0" style="border-bottom: 2px solid var(--border-color); background-color: var(--table-header-bg);">
+            <div class="col-span-4">Girdi</div>
+            <div class="col-span-4">parseInt</div>
+            <div class="col-span-4">Number</div>
+        </div>
+
+        <!-- Sonuç Listesi -->
+        <div id="results-container" class="px-12 py-4 space-y-4 flex-grow">
+            <!-- JS ile doldurulacak -->
+        </div>
+
+        <!-- Alt Bilgi (Renkler CSS değişkenlerinden alınıyor) -->
+        <div id="footer" class="px-12 py-4 text-center text-sm text-slate-500 flex-shrink-0" style="border-top: 2px solid var(--border-color);">
+            * Kırmızı: NaN | Yeşil: Sayı | Sarı: Farklı Sonuç
+        </div>
+    </div>
+
+    <script>
+        // --- Tema Verileri (20 Tema) ---
+        const themes = {
+            'Dark (Default)': { headerBg: '#4f46e5', headerText: '#e0e7ff', cardBg: 'rgba(30, 41, 59, 0.9)', tableBg: 'rgba(30, 41, 59, 0.5)', border: '#334155', pageBg: '#0f172a' },
+            'Vibrant Teal': { headerBg: '#0d9488', headerText: '#ccfbf1', cardBg: 'rgba(23, 23, 23, 0.9)', tableBg: 'rgba(63, 63, 70, 0.5)', border: '#3f3f46', pageBg: '#1f2937' },
+            'Ocean Blue': { headerBg: '#2563eb', headerText: '#eff6ff', cardBg: 'rgba(10, 25, 47, 0.9)', tableBg: 'rgba(30, 64, 175, 0.5)', border: '#1e3a8a', pageBg: '#071a33' },
+            'Monochrome': { headerBg: '#18181b', headerText: '#f4f4f5', cardBg: 'rgba(40, 40, 40, 0.9)', tableBg: 'rgba(52, 52, 52, 0.5)', border: '#525252', pageBg: '#18181b' },
+            'Forest Green': { headerBg: '#16a34a', headerText: '#ecfdf5', cardBg: 'rgba(16, 30, 16, 0.9)', tableBg: 'rgba(22, 101, 52, 0.5)', border: '#34d399', pageBg: '#0c1f0c' },
+            'Soft Peach': { headerBg: '#f97316', headerText: '#fff7ed', cardBg: 'rgba(255, 250, 245, 0.9)', tableBg: 'rgba(253, 237, 213, 0.5)', border: '#fdbf8c', pageBg: '#fef3c7' },
+            'Deep Red': { headerBg: '#dc2626', headerText: '#fee2e2', cardBg: 'rgba(28, 0, 0, 0.9)', tableBg: 'rgba(185, 28, 28, 0.5)', border: '#b91c1c', pageBg: '#1e0a0a' },
+            'Purple Haze': { headerBg: '#9333ea', headerText: '#f3e8ff', cardBg: 'rgba(15, 8, 26, 0.9)', tableBg: 'rgba(124, 58, 237, 0.5)', border: '#7c3aed', pageBg: '#0d071a' },
+            'Sunburst Yellow': { headerBg: '#ca8a04', headerText: '#fffbeb', cardBg: 'rgba(255, 251, 235, 0.9)', tableBg: 'rgba(252, 211, 77, 0.5)', border: '#fcd34d', pageBg: '#fff176' },
+            'Cyberpunk': { headerBg: '#f91880', headerText: '#1e293b', cardBg: 'rgba(0, 0, 0, 0.95)', tableBg: 'rgba(0, 255, 255, 0.1)', border: '#00ffff', pageBg: '#111111' },
+            'High Contrast': { headerBg: '#ffffff', headerText: '#000000', cardBg: 'rgba(24, 24, 24, 0.9)', tableBg: 'rgba(107, 114, 128, 0.5)', border: '#6b7280', pageBg: '#000000' },
+            'Grey Ghost': { headerBg: '#6b7280', headerText: '#f9fafb', cardBg: 'rgba(243, 244, 246, 0.9)', tableBg: 'rgba(209, 213, 219, 0.5)', border: '#d1d5db', pageBg: '#e5e7eb' },
+            'Warm Sepia': { headerBg: '#78350f', headerText: '#fefce8', cardBg: 'rgba(60, 40, 20, 0.9)', tableBg: 'rgba(161, 98, 7, 0.5)', border: '#a16207', pageBg: '#452a0a' },
+            'Pink Flamingo': { headerBg: '#db2777', headerText: '#fce7f3', cardBg: 'rgba(40, 10, 20, 0.9)', tableBg: 'rgba(244, 114, 182, 0.5)', border: '#f472b6', pageBg: '#1f0b13' },
+            'Light Clean': { headerBg: '#f3f4f6', headerText: '#1f2937', cardBg: 'rgba(255, 255, 255, 0.95)', tableBg: 'rgba(229, 231, 235, 0.5)', border: '#e5e7eb', pageBg: '#f9fafb' },
+            'Dark Clean': { headerBg: '#111827', headerText: '#f9fafb', cardBg: 'rgba(31, 41, 55, 0.9)', tableBg: 'rgba(55, 65, 81, 0.5)', border: '#374151', pageBg: '#1f2937' },
+            'Olive Drab': { headerBg: '#4d7c0f', headerText: '#f7fee7', cardBg: 'rgba(36, 47, 10, 0.9)', tableBg: 'rgba(132, 204, 22, 0.5)', border: '#84cc16', pageBg: '#222f07' },
+            'Sky Blue': { headerBg: '#0ea5e9', headerText: '#f0f9ff', cardBg: 'rgba(20, 30, 45, 0.9)', tableBg: 'rgba(56, 189, 248, 0.5)', border: '#38bdf8', pageBg: '#081f33' },
+            'Magenta Pop': { headerBg: '#d946ef', headerText: '#fae8ff', cardBg: 'rgba(30, 10, 40, 0.9)', tableBg: 'rgba(232, 121, 249, 0.5)', border: '#e879f9', pageBg: '#1f0a2d' },
+            'Spring Breeze': { headerBg: '#34d399', headerText: '#064e3b', cardBg: 'rgba(240, 255, 240, 0.9)', tableBg: 'rgba(110, 231, 183, 0.5)', border: '#6ee7b7', pageBg: '#ccfbf1' }
+        };
+
+        const container = document.getElementById('results-container');
+        const mainPost = document.getElementById('main-post');
+        const root = document.documentElement;
+        const themeSelect = document.getElementById('theme-select');
+        
+        function applyTheme(themeName) {
+            const theme = themes[themeName];
+            if (!theme) return;
+
+            // CSS Değişkenlerini Güncelle
+            root.style.setProperty('--bg-page', theme.pageBg);
+            mainPost.style.setProperty('--header-bg', theme.headerBg);
+            mainPost.style.setProperty('--header-text', theme.headerText);
+            mainPost.style.setProperty('--card-bg', theme.cardBg);
+            mainPost.style.setProperty('--table-header-bg', theme.tableBg);
+            mainPost.style.setProperty('--border-color', theme.border);
+
+            // Başlık metninin rengini güncelle (headerText değişkeninden alacak şekilde)
+            const headerElement = document.getElementById('header');
+            if (headerElement) {
+                headerElement.style.backgroundColor = theme.headerBg;
+                headerElement.style.color = theme.headerText;
+            }
+            // Tablo başlık arkaplanını güncelle
+            const tableHeaderElement = document.getElementById('table-header');
+            if (tableHeaderElement) {
+                tableHeaderElement.style.backgroundColor = theme.tableBg;
+                tableHeaderElement.style.borderBottom = `2px solid ${theme.border}`;
+            }
+            // Alt bilgi sınırını güncelle
+            const footerElement = document.getElementById('footer');
+            if (footerElement) {
+                footerElement.style.borderTop = `2px solid ${theme.border}`;
+            }
+        }
+        
+        function populateThemes() {
+            // Seçenekleri oluştur
+            Object.keys(themes).forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                themeSelect.appendChild(option);
+            });
+            // Varsayılan temayı uygula
+            applyTheme(themeSelect.value);
+        }
+        
+        // --- Sonuçları Çizme Mantığı (Değişmedi) ---
+        const testValues = [
+            { label: '"42"',      value: "42",      desc: "String Sayı" },
+            { label: '"42px"',    value: "42px",    desc: "CSS Değeri" },
+            { label: '"42.99"',   value: "42.99",   desc: "Ondalıklı" },
+            { label: '"A100"',    value: "A100",    desc: "Harf Başlangıç" },
+            { label: '""',        value: "",        desc: "Boş String" },
+            { label: 'null',      value: null,      desc: "Null Değer" },
+            { label: 'true',      value: true,      desc: "Boolean" },
+            { label: '"  15  "',  value: "  15  ",  desc: "Boşluklu" }
+        ];
+
+        function renderResults() {
+            container.innerHTML = '';
+            
+            testValues.forEach(item => {
+                const pInt = parseInt(item.value);
+                const num = Number(item.value);
+
+                const pIntDisplay = Number.isNaN(pInt) ? "NaN" : pInt;
+                const numDisplay = Number.isNaN(num) ? "NaN" : num;
+
+                // Sonuç Renk Sınıfları
+                let pIntClass = Number.isNaN(pInt) ? "text-red-400 font-extrabold" : "text-emerald-400 font-extrabold";
+                let numClass = Number.isNaN(num) ? "text-red-400 font-extrabold" : "text-emerald-400 font-extrabold";
+
+                // Fark Kontrolü
+                const isDifferent = String(pIntDisplay) !== String(numDisplay);
+                
+                // Satır Arkaplanı ve Vurgu (py-5 korundu)
+                const rowBg = isDifferent ? "bg-slate-800/80 border-l-8 border-amber-500" : "bg-slate-800/30 border-l-8 border-slate-600";
+                
+                const html = `
+                    <div class="${rowBg} rounded-xl py-5 grid grid-cols-12 gap-2 items-center relative transition-all duration-200">
+                        
+                        <!-- Girdi Kısmı: Ortalanmış -->
+                        <div class="col-span-4 flex flex-col justify-center text-center"> 
+                            <span class="code-font text-sky-300 font-bold text-3xl truncate" title='${item.label}'>${item.label}</span>
+                            <span class="text-sm text-slate-500">${item.desc}</span>
+                        </div>
+
+                        <!-- parseInt Sonucu -->
+                        <div class="col-span-4 text-center code-font text-5xl ${pIntClass}">
+                            ${pIntDisplay}
+                        </div>
+
+                        <!-- Number Sonucu -->
+                        <div class="col-span-4 text-center code-font text-5xl ${numClass}">
+                            ${numDisplay}
+                        </div>
+                        
+                    </div>
+                `;
+
+                container.innerHTML += html;
+            });
+        }
+        
+        // İlk yüklemede çalıştır
+        window.onload = function() {
+            populateThemes();
+            renderResults();
+        };
+    </script>
+</body>
+</html>
